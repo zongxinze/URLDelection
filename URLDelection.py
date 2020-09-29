@@ -3,14 +3,7 @@ import argparse
 import requests
 import time
 import threading
-
-class my_threads(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-
-    def run(self):
-        parser()
-
+from concurrent.futures import ThreadPoolExecutor
 
 def delection(url):
     try:
@@ -22,13 +15,20 @@ def delection(url):
         e
 
 
-def io(read):
+def io(read,threads):
     fwirte = open("urls.txt","w")
     read = open(read,"r+")
+    poo = ThreadPoolExecutor(max_workers=threads)
+    #for i in range(100):
+        #thread = my_threads(read,i)
+        #thread.start()
     for i in read.readlines():
-        if(delection(i)==200):
+        for x in range(threads):
+            stat = poo.submit(delection,i)
+        if(stat.result()==200):
             print(i)
             fwirte.write(i)
+
     print("检测完成！")
     fwirte.close()
     read.close()
@@ -36,14 +36,12 @@ def io(read):
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t")
+    parser.add_argument("-s")
     args = parser.parse_args()
-    io(args.t)
+    io(args.t,args.s)
 
 def main():
-    for i in range(10):
-        thread = my_threads()
-        thread.start()
-    #parser()
+    parser()
 
 if __name__=="__main__":
     main()
