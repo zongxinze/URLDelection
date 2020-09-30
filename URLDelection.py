@@ -36,7 +36,7 @@ def io(read,threads):
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t")
-    parser.add_argument("-s")
+    parser.add_argument("-s",type=int)
     args = parser.parse_args()
     io(args.t,args.s)
 
